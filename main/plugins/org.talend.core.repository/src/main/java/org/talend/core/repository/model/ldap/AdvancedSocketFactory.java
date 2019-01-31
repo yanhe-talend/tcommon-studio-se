@@ -22,15 +22,14 @@ import java.security.Security;
 import java.util.Hashtable;
 
 import javax.net.SocketFactory;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
 
 import org.apache.log4j.Logger;
 import org.talend.core.repository.i18n.Messages;
-
-import com.sun.net.ssl.KeyManagerFactory;
-import com.sun.net.ssl.SSLContext;
-import com.sun.net.ssl.TrustManager;
-import com.sun.net.ssl.internal.ssl.Provider;
 
 /**
  * This class is used for LDAP. <br/>
@@ -219,12 +218,12 @@ public class AdvancedSocketFactory extends SSLSocketFactory {
      */
     private void init(KeyStore ks, char password[]) {
         SSLContext ctx = null;
-        com.sun.net.ssl.KeyManager keyManagers[] = null;
+        KeyManager keyManagers[] = null;
         TrustManager trustManagers[] = null;
         try {
             if (ks != null) {
                 KeyManagerFactory kmf = null;
-                kmf = KeyManagerFactory.getInstance("SunX509"); //$NON-NLS-1$
+                kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm()); //$NON-NLS-1$
                 kmf.init(ks, password);
                 keyManagers = kmf.getKeyManagers();
             }
@@ -237,7 +236,4 @@ public class AdvancedSocketFactory extends SSLSocketFactory {
         }
     }
 
-    static {
-        Security.addProvider(new Provider());
-    }
 }
